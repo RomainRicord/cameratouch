@@ -19,7 +19,7 @@ const PicturesScreen = ({navigation}) => {
         const permission_camera = PermissionsAndroid.PERMISSIONS.CAMERA;
       
         const hasPermission_write = await PermissionsAndroid.check(permission_write);
-        const hasPermission_read = await PermissionsAndroid.check(permission_write);
+        const hasPermission_read = await PermissionsAndroid.check(permission_read);
         const hasPermission_camera = await PermissionsAndroid.check(permission_camera);
         if ((hasPermission_write) && (hasPermission_read) && (hasPermission_camera)) {
           return true;
