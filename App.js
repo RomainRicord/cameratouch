@@ -9,13 +9,16 @@
 import React from 'react';
 
 import Navigation from './src/navigator/Navigation';
-
+import { PictureProvider } from './src/components/PictureProvider';
 
 const App = () => {
 
-  return (
+  const [picture, setPicture] = React.useState(null);
 
-    <Navigation />
+  return (
+    <PictureProvider.Provider value={{picture,setPicture}} >
+      <Navigation />
+    </PictureProvider.Provider>
   );
 }
 

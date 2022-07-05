@@ -1,18 +1,21 @@
-import React,{useEffect, useState} from 'react'
+import React,{useEffect, useState,useContext} from 'react'
 import {View, Text, Button, Pressable, Image,StyleSheet} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { launchCamera } from 'react-native-image-picker'
+import { PictureProvider } from '../components/PictureProvider'
 
 const HomeScreen = ({ navigation }) => {
 
     const [photo, setPhoto] = useState()
+
+    const photo__ = useContext(PictureProvider)
 
     useEffect(() => {
         console.log(typeof(photo))
     }, [photo])
 
     const launchImageLibrary = async () => {
-        let photo_ = ""
+        let photo_ = null
         let options = {
           storageOptions: {
             skipBackup: true,
@@ -31,11 +34,9 @@ const HomeScreen = ({ navigation }) => {
             alert(response.customButton);
           } else {
 
-            photo_ = response.assets[0].uri
-            
-            console.log("Photo",/* Getting the first image from the array of images that are returned
-            from the image picker. */
-            photo_)
+            if (typeof(response.assets) == "object") {
+              photo_ = response.assets[0].uri
+            }
 
             
           
@@ -50,15 +51,17 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.sphere}>
                 <View style={styles.topsphere}>
                     
-                    {typeof(photo) != 'undefined' && <Image source={{uri: photo}} style={styles.topsphere} />}
-                    {typeof(photo) === 'undefined' && <Icon name="image" size={150} color="white" />}
+                    {photo__.picture != null && <Image source={{uri: photo__.picture}} style={styles.topsphere} />}
+                    {photo__.picture === null && <Icon name="image" size={150} color="white" />}
                 </View>
                 <Pressable style={styles.button} onPress={async () => {
                     
                     await launchImageLibrary().then(({photo_}) => {
-                        console.log('photo______',photo_)
-                        setPhoto(photo_)
-                        console.log(photo_,'photo')
+                       
+                        if (photo_ != null) {
+                          photo__.setPicture(photo_)
+                        }
+                        
                     }).catch((error) => {
                         console.log(error)
                     })
@@ -77,10 +80,9 @@ const HomeScreen = ({ navigation }) => {
 export default HomeScreen
 
 const styles = StyleSheet.create({
-    container:{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'rgb(34,34,34,255)'},
+    container:{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'rgb(16,16,16)'},
     sphere:{width:400,height:400,borderRadius:300,display:'flex',justifyContent:'center',alignItems:'center'},
-    topsphere: {width:300,height:300,borderRadius:150,backgroundColor:'gray',display:'flex',justifyContent:'center',alignItems:'center'},
+    topsphere: {width:300,height:300,borderRadius:150,backgroundColor:'rgb(64,64,64)',display:'flex',justifyContent:'center',alignItems:'center'},
     button:{position:'absolute',right:100,bottom:50,borderRadius:50,backgroundColor:'red'},
-    viewbutton:{
-        width:50,height:50,borderRadius:50,display:'flex',justifyContent:'center',alignItems:'center',backgroundColor:'rgb(20,204,34,255)'}
+    viewbutton:{width:50,height:50,borderRadius:50,display:'flex',justifyContent:'center',alignItems:'center'}
 })
